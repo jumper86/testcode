@@ -76,3 +76,10 @@ func (this *BtNode) Tick() BtnResult {
 
 func (this *BtNode) Reset() {
 }
+
+func (this *BtNode) AddChild(bn BtNodeInterf) {
+	return
+}
+func (this *BtNode) RemoveChild(bn BtNodeInterf) {
+	return
+}
