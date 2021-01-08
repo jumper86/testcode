@@ -74,6 +74,14 @@ func (this *BtNode) Tick() BtnResult {
 	return Successed
 }
 
+//
+//func (this *BtNode) Process() BtnResult {
+//	if this.Evaluate() {
+//		return this.Tick()
+//	}
+//	return Failed
+//}
+
 func (this *BtNode) Reset() {
 }
 

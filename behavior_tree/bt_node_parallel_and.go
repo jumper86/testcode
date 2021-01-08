@@ -122,3 +122,11 @@ func (this *BtNodeParallelAnd) RemoveChild(bn BtNodeInterf) {
 	this.Reset()
 	return
 }
+
+//
+//func (this *BtNodeParallelAnd) Process() BtnResult {
+//	if this.Evaluate() {
+//		return this.Tick()
+//	}
+//	return Failed
+//}

@@ -127,3 +127,11 @@ func (this *BtNodeSelector) RemoveChild(bn BtNodeInterf) {
 	this.Reset()
 	return
 }
+
+//
+//func (this *BtNodeSelector) Process() BtnResult {
+//	if this.Evaluate() {
+//		return this.Tick()
+//	}
+//	return Failed
+//}

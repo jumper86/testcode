@@ -8,8 +8,10 @@ type BtNodeInterf interface {
 	CheckTimer() bool
 	Evaluate() bool
 	DoEvaluate() bool //每个节点自身情况判断准入
-	Tick() BtnResult  //节点运行逻辑
-	Reset()           //清理自身以及子节点数据
+	Tick() BtnResult
+	Reset() //清理自身以及子节点数据
+
+	//Process() BtnResult //节点运行逻辑
 
 	AddChild(bn BtNodeInterf)
 	RemoveChild(bn BtNodeInterf)
