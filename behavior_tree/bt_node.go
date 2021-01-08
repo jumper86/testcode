@@ -1,6 +1,9 @@
 package behavior_tree
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type BtNode struct {
 	id                int64    //node id，在删除时需要使用
@@ -62,6 +65,8 @@ func (this *BtNode) Evaluate() bool {
 
 //可能需要实现的部分函数
 func (this *BtNode) DoEvaluate() bool {
+	fmt.Printf("btnode\n")
+
 	return true
 }
 

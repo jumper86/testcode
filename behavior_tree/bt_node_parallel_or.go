@@ -1,18 +1,32 @@
 package behavior_tree
 
 type BtNodeParallelOr struct {
-	BtNodeCompose
-	result []BtnResult //每个子节点对应执行结果
+	BtNode
+	children []BtNodeInterf //所有子节点
+	result   []BtnResult    //每个子节点对应执行结果
 
 }
 
 func NewBtNodeParallelOr(name string, interval int64) BtNodeParallelOr {
 	var btns BtNodeParallelOr
-	btns.BtNodeCompose = NewBtNodeCompose(name, interval)
+	btns.BtNode = NewBtNode(name, interval)
+	btns.children = make([]BtNodeInterf, 0)
 	btns.result = make([]BtnResult, 0)
 	btns.types = ComposeParallelOrNode
 
 	return btns
+}
+
+func (this *BtNodeParallelOr) Evaluate() bool {
+	//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
+	if this.status != Ready {
+		return true
+	}
+	if this.activated && this.CheckTimer() && this.DoEvaluate() {
+		this.status = Running
+		return true
+	}
+	return false
 }
 
 //Evaluate 只在开始执行该节点时调用一次
@@ -51,7 +65,7 @@ func (this *BtNodeParallelOr) Tick() BtnResult {
 
 //准入失败时，执行成功，执行失败时调用
 func (this *BtNodeParallelOr) Reset() {
-	this.BtNodeCompose.Reset()
+	this.status = Ready
 	for i := range this.result {
 		this.result[i] = Ready
 	}
