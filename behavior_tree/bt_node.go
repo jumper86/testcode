@@ -2,43 +2,6 @@ package behavior_tree
 
 import "time"
 
-//节点类型
-type BtnTypes int
-
-const (
-	BaseNode BtnTypes = 0
-	Walk     BtnTypes = 1
-)
-
-//节点运行状态
-type BtnResult int
-
-const (
-	//None      BtnResult = 0
-	Ready     BtnResult = 1
-	Running   BtnResult = 2
-	Successed BtnResult = 3
-	Failed    BtnResult = 4
-)
-
-type BtNodeInterf interface {
-	GetId() int64       //获取节点id
-	GetTypes() BtnTypes //获取节点类型
-	Enable()
-	Disable()
-	CheckTimer() bool
-	Evaluate() bool
-	DoEvaluate() bool //每个节点自身情况判断准入
-	Tick() BtnResult  //节点运行逻辑
-	Reset()           //清理自身以及子节点数据
-}
-
-type BtNodeComposeInterf interface {
-	BtNodeInterf
-	AddChild(bn BtNodeInterf)
-	RemoveChild(bn BtNodeInterf)
-}
-
 type BtNode struct {
 	id                int64    //node id，在删除时需要使用
 	types             BtnTypes //节点类型

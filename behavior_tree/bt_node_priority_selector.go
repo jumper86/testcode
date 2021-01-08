@@ -1,20 +1,22 @@
 package behavior_tree
 
-type BtNodePrioritySelector struct {
+type BtNodeSelector struct {
 	BtNodeCompose
 	activeIdx   int
 	activeChild BtNodeInterf //当前执行子节点
 }
 
-func NewBtNodePrioritySelector(name string, interval int64) BtNodePrioritySelector {
-	var btns BtNodePrioritySelector
+func NewBtNodeSelector(name string, interval int64) BtNodeSelector {
+	var btns BtNodeSelector
 	btns.BtNodeCompose = NewBtNodeCompose(name, interval)
 	btns.activeIdx = -1
 	btns.activeChild = nil
+	btns.types = ComposeSelectorNode
+
 	return btns
 }
 
-func (this *BtNodePrioritySelector) DoEvaluate() bool {
+func (this *BtNodeSelector) DoEvaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}
@@ -30,7 +32,7 @@ func (this *BtNodePrioritySelector) DoEvaluate() bool {
 	return false
 }
 
-func (this *BtNodePrioritySelector) Tick() BtnResult {
+func (this *BtNodeSelector) Tick() BtnResult {
 
 	if this.activeChild == nil {
 		return Failed
@@ -74,7 +76,7 @@ func (this *BtNodePrioritySelector) Tick() BtnResult {
 	return Failed
 }
 
-func (this *BtNodePrioritySelector) Reset() {
+func (this *BtNodeSelector) Reset() {
 	this.BtNodeCompose.Reset()
 	this.activeIdx = -1
 	this.activeChild = nil

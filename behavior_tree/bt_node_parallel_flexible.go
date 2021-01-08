@@ -10,6 +10,8 @@ func NewBtNodeParallelFlexible(name string, interval int64) BtNodeParallelFlexib
 	var btns BtNodeParallelFlexible
 	btns.BtNodeCompose = NewBtNodeCompose(name, interval)
 	btns.evaluate = make([]bool, 0)
+	btns.types = ComposeParallelFlexibleNode
+
 	return btns
 }
 

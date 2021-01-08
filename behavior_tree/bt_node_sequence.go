@@ -11,6 +11,7 @@ func NewBtNodeSequence(name string, interval int64) BtNodeSequence {
 	btns.BtNodeCompose = NewBtNodeCompose(name, interval)
 	btns.activeIdx = -1
 	btns.activeChild = nil
+	btns.types = ComposeSequenceNode
 	return btns
 }
 

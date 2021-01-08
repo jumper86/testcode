@@ -10,6 +10,8 @@ func NewBtNodeParallelOr(name string, interval int64) BtNodeParallelOr {
 	var btns BtNodeParallelOr
 	btns.BtNodeCompose = NewBtNodeCompose(name, interval)
 	btns.result = make([]BtnResult, 0)
+	btns.types = ComposeParallelOrNode
+
 	return btns
 }
 
