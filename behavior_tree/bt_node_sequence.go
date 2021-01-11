@@ -32,9 +32,9 @@ func (this *BtNodeSequence) Evaluate() bool {
 }
 
 //Evaluate 只在开始执行该节点时调用一次
-func (this *BtNodeSequence) DoEvaluate() bool {
+func doEvaluate(btn BtNodeInterf) bool {
 	fmt.Printf("sequence.")
-	if len(this.children) == 0 {
+	if len(btn.children) == 0 {
 		return false
 	}
 
@@ -62,6 +62,12 @@ func (this *BtNodeSequence) Tick() BtnResult {
 	}
 
 	//结果 成功
+	//note:
+	//      在顺序节点中，还有另一种方式，就是在子节点执行成功的时候，继续执行下一个子节点，直到某个子节点返回运行中或者执行失败。
+	//      https://www.behaviac.com/concepts/
+	//      但是这种方式可能存在问题，可能导致这个顺序节点所花费的时间太长。
+	//      而这里当执行一个子节点成功了就立即返回运行中，能够防止该顺序节点花费过长时间
+
 	if childRst == Successed {
 		if this.activeIdx == len(this.children)-1 {
 			this.Reset()

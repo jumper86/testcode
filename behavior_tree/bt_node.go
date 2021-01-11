@@ -1,7 +1,6 @@
 package behavior_tree
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -13,7 +12,8 @@ type BtNode struct {
 	interval          int64    //运行cd, 单位纳秒
 	lastTimeEvaluated int64    //上次运行时间
 
-	status BtnResult //节点运行状态
+	evaluate func(btn BtNodeInterf) bool //个性验证
+	status   BtnResult                   //节点运行状态
 }
 
 //////////////////////////////////////////////
@@ -57,15 +57,12 @@ func (this *BtNode) CheckTimer() bool {
 }
 
 func (this *BtNode) Evaluate() bool {
-	if this.activated && this.CheckTimer() && this.DoEvaluate() {
-		return true
+	if !(this.activated && this.CheckTimer()) {
+		return false
 	}
-	return false
-}
-
-//可能需要实现的部分函数
-func (this *BtNode) DoEvaluate() bool {
-	fmt.Printf("btnode\n")
+	if this.evaluate != nil && !this.evaluate(this) {
+		return false
+	}
 
 	return true
 }
@@ -74,13 +71,12 @@ func (this *BtNode) Tick() BtnResult {
 	return Successed
 }
 
-//
-//func (this *BtNode) Process() BtnResult {
-//	if this.Evaluate() {
-//		return this.Tick()
-//	}
-//	return Failed
-//}
+func (this *BtNode) Process() BtnResult {
+	if !this.Evaluate() {
+		return Failed
+	}
+	return this.Tick()
+}
 
 func (this *BtNode) Reset() {
 }
