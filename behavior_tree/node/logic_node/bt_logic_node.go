@@ -1,7 +1,7 @@
 package logic_node
 
 import (
-	"test/behavior_tree/node"
+	"testcode/behavior_tree/node"
 )
 
 type BtLogicNode struct {

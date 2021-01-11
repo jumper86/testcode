@@ -1,6 +1,6 @@
 package behavior_tree
 
-import "test/behavior_tree/node"
+import "testcode/behavior_tree/node"
 
 type BehaviorTree struct {
 	root node.BtNodeInterf

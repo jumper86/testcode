@@ -1,8 +1,8 @@
 package decorator_node
 
 import (
-	"test/behavior_tree/def"
-	"test/behavior_tree/node"
+	"testcode/behavior_tree/def"
+	"testcode/behavior_tree/node"
 )
 
 type BtDecoratorNode struct {

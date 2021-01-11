@@ -1,4 +1,4 @@
-module test
+module testcode
 
 go 1.14
 

@@ -1,6 +1,6 @@
 package node
 
-import "test/behavior_tree/def"
+import "testcode/behavior_tree/def"
 
 type BtNodeInterf interface {
 	GetId() int64          //获取节点id

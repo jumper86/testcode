@@ -2,8 +2,8 @@ package logic_node
 
 import (
 	"fmt"
-	"test/behavior_tree/def"
-	"test/behavior_tree/node"
+	"testcode/behavior_tree/def"
+	"testcode/behavior_tree/node"
 )
 
 type BtNodeSequence struct {
