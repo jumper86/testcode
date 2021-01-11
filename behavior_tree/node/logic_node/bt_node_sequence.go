@@ -47,7 +47,7 @@ func (this *BtNodeSequence) Tick() def.BtnResult {
 	}
 
 	//执行逻辑
-	childRst := this.activeChild.Tick()
+	childRst := this.activeChild.Process()
 
 	//结果 运行中
 	if childRst == def.Running {

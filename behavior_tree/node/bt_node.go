@@ -56,6 +56,10 @@ func (this *BtNode) SetStatus(s def.BtnResult) {
 	this.status = s
 }
 
+func (this *BtNode) GetStatus() def.BtnResult {
+	return this.status
+}
+
 func (this *BtNode) Enable() {
 	this.activated = true
 }

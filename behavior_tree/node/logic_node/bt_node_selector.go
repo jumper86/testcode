@@ -46,7 +46,7 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 		return def.Failed
 	}
 
-	childRst := this.activeChild.Tick()
+	childRst := this.activeChild.Process()
 
 	//运行中
 	if childRst == def.Running {

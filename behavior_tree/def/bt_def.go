@@ -14,10 +14,11 @@ const (
 	ComposeParallelFlexibleNode BtnType = 15
 
 	//装饰器节点
-	DecoratorSucceederNode        BtnType = 51
-	DecoratorInverterNode         BtnType = 52
-	DecoratorRepeatUtilFailedNode BtnType = 53
-
+	DecoratorIfNode                  BtnType = 51
+	DecoratorSucceederNode           BtnType = 52
+	DecoratorInverterNode            BtnType = 53
+	DecoratorRepeatUtilFailedNode    BtnType = 54
+	DecoratorRepeatUtilSeccessedNode BtnType = 55
 	//行为节点
 	Walk BtnType = 100
 )

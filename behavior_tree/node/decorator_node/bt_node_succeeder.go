@@ -24,7 +24,7 @@ func (this *BtNodeSucceeder) doEvaluate() bool {
 
 func (this *BtNodeSucceeder) Tick() def.BtnResult {
 
-	childRst := this.child.Tick()
+	childRst := this.child.Process()
 	//结果 运行中
 	if childRst == def.Running {
 		return def.Running

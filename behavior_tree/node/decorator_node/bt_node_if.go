@@ -5,24 +5,33 @@ import (
 	"test/behavior_tree/node"
 )
 
-type BtNodeInverter struct {
+type BtNodeIf struct {
 	BtDecoratorNode
+	cond  func() bool       //条件
 	child node.BtNodeInterf //所有子节点
 }
 
-func NewBtNodeInverter(name string, interval int64) *BtNodeInverter {
-	var btns BtNodeInverter
+func NewBtNodeIf(name string, interval int64, cond func() bool) *BtNodeIf {
+	var btns BtNodeIf
 	btns.BtNode = node.NewBtNode(name, interval)
-	btns.SetTypes(def.DecoratorInverterNode)
+	btns.SetTypes(def.DecoratorIfNode)
 	btns.SetEvaluate(btns.doEvaluate)
+	btns.cond = cond
 	return &btns
 }
 
-func (this *BtNodeInverter) doEvaluate() bool {
+func (this *BtNodeIf) doEvaluate() bool {
+	if !this.cond() {
+		return false
+	}
 	return this.child.Evaluate()
 }
 
-func (this *BtNodeInverter) Tick() def.BtnResult {
+func (this *BtNodeIf) Tick() def.BtnResult {
+
+	if !this.cond() {
+		return def.Failed
+	}
 
 	childRst := this.child.Process()
 	//结果 运行中
