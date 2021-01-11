@@ -1,21 +1,25 @@
-package behavior_tree
+package logic_node
 
-import "fmt"
+import (
+	"fmt"
+	"test/behavior_tree/def"
+	"test/behavior_tree/node"
+)
 
 type BtNodeSequence struct {
 	BtLogicNode
-	activeIdx   int          //当前执行子节点idx
-	activeChild BtNodeInterf //当前执行子节点
+	activeIdx   int               //当前执行子节点idx
+	activeChild node.BtNodeInterf //当前执行子节点
 }
 
 func NewBtNodeSequence(name string, interval int64) *BtNodeSequence {
 	var btns BtNodeSequence
-	btns.BtNode = NewBtNode(name, interval)
-	btns.children = make([]BtNodeInterf, 0)
+	btns.BtNode = node.NewBtNode(name, interval)
+	btns.children = make([]node.BtNodeInterf, 0)
 	btns.activeIdx = -1
 	btns.activeChild = nil
-	btns.types = ComposeSequenceNode
-	btns.evaluate = btns.doEvaluate
+	btns.SetTypes(def.ComposeSequenceNode)
+	btns.SetEvaluate(btns.doEvaluate)
 	return &btns
 }
 
@@ -36,7 +40,7 @@ func (this *BtNodeSequence) doEvaluate() bool {
 	return true
 }
 
-func (this *BtNodeSequence) Tick() BtnResult {
+func (this *BtNodeSequence) Tick() def.BtnResult {
 	if this.activeChild == nil {
 		this.activeIdx = 0
 		this.activeChild = this.children[0]
@@ -46,8 +50,8 @@ func (this *BtNodeSequence) Tick() BtnResult {
 	childRst := this.activeChild.Tick()
 
 	//结果 运行中
-	if childRst == Running {
-		return Running
+	if childRst == def.Running {
+		return def.Running
 	}
 
 	//结果 成功
@@ -57,29 +61,29 @@ func (this *BtNodeSequence) Tick() BtnResult {
 	//      但是这种方式可能存在问题，可能导致这个顺序节点所花费的时间太长。
 	//      而这里当执行一个子节点成功了就立即返回运行中，能够防止该顺序节点花费过长时间
 
-	if childRst == Successed {
+	if childRst == def.Successed {
 		if this.activeIdx == len(this.children)-1 {
 			this.Reset()
-			return Successed
+			return def.Successed
 		} else {
 			this.activeIdx++
 			this.activeChild = this.children[this.activeIdx]
-			return Running
+			return def.Running
 		}
 	}
 
 	//结果 失败
-	if childRst == Failed {
+	if childRst == def.Failed {
 		this.Reset()
-		return Failed
+		return def.Failed
 	}
 
-	return Failed
+	return def.Failed
 }
 
 //准入失败时，执行成功，执行失败时调用
 func (this *BtNodeSequence) Reset() {
-	this.status = Ready
+	this.SetStatus(def.Ready)
 	this.activeIdx = -1
 	this.activeChild = nil
 	for _, child := range this.children {

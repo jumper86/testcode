@@ -1,7 +1,9 @@
 package behavior_tree
 
+import "test/behavior_tree/node"
+
 type BehaviorTree struct {
-	root BtNodeInterf
+	root node.BtNodeInterf
 }
 
 //每个帧调用该函数

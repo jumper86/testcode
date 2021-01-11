@@ -1,11 +1,14 @@
 package main
 
-import "test/behavior_tree"
+import (
+	node2 "test/behavior_tree/node"
+	"test/behavior_tree/node/logic_node"
+)
 
 func main() {
 
-	node := behavior_tree.NewBtNodeSequence("s", 0)
-	var baseNode behavior_tree.BtNodeInterf
+	node := logic_node.NewBtNodeSequence("s", 0)
+	var baseNode node2.BtNodeInterf
 	baseNode = &node
 	baseNode.Evaluate()
 }

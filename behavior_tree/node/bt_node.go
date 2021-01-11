@@ -1,19 +1,20 @@
-package behavior_tree
+package node
 
 import (
+	"test/behavior_tree/def"
 	"time"
 )
 
 type BtNode struct {
-	id                int64    //node id，在删除时需要使用
-	types             BtnTypes //节点类型
-	name              string   //名字
-	activated         bool     //是否激活
-	interval          int64    //运行cd, 单位纳秒
-	lastTimeEvaluated int64    //上次运行时间
+	id                int64       //node id，在删除时需要使用
+	types             def.BtnType //节点类型
+	name              string      //名字
+	activated         bool        //是否激活
+	interval          int64       //运行cd, 单位纳秒
+	lastTimeEvaluated int64       //上次运行时间
 
-	evaluate func() bool //个性验证
-	status   BtnResult   //节点运行状态
+	evaluate func() bool   //个性验证
+	status   def.BtnResult //节点运行状态
 }
 
 //////////////////////////////////////////////
@@ -22,12 +23,12 @@ type BtNode struct {
 func NewBtNode(name string, interval int64) BtNode {
 	var btn BtNode
 	btn.id = 1
-	btn.types = BaseNode
+	btn.types = def.BaseNode
 	btn.name = name
 	btn.activated = true
 	btn.interval = interval
 	btn.lastTimeEvaluated = 0
-	btn.status = Ready
+	btn.status = def.Ready
 	return btn
 }
 
@@ -37,8 +38,22 @@ func NewBtNode(name string, interval int64) BtNode {
 func (this *BtNode) GetId() int64 {
 	return this.id
 }
-func (this *BtNode) GetTypes() BtnTypes {
+func (this *BtNode) GetTypes() def.BtnType {
 	return this.types
+}
+
+func (this *BtNode) SetTypes(t def.BtnType) {
+	this.types = t
+	return
+}
+
+func (this *BtNode) SetEvaluate(f func() bool) {
+	this.evaluate = f
+	return
+}
+
+func (this *BtNode) SetStatus(s def.BtnResult) {
+	this.status = s
 }
 
 func (this *BtNode) Enable() {
@@ -58,7 +73,7 @@ func (this *BtNode) CheckTimer() bool {
 
 //note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
 func (this *BtNode) Evaluate() bool {
-	if this.status != Ready {
+	if this.status != def.Ready {
 		return true
 	}
 
@@ -72,13 +87,13 @@ func (this *BtNode) Evaluate() bool {
 	return true
 }
 
-func (this *BtNode) Tick() BtnResult {
-	return Successed
+func (this *BtNode) Tick() def.BtnResult {
+	return def.Successed
 }
 
-func (this *BtNode) Process() BtnResult {
+func (this *BtNode) Process() def.BtnResult {
 	if !this.Evaluate() {
-		return Failed
+		return def.Failed
 	}
 	return this.Tick()
 }

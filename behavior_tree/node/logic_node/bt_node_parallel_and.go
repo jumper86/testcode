@@ -1,19 +1,24 @@
-package behavior_tree
+package logic_node
+
+import (
+	"test/behavior_tree/def"
+	"test/behavior_tree/node"
+)
 
 type BtNodeParallelAnd struct {
-	BtNode
-	children []BtNodeInterf //所有子节点
-	result   []BtnResult    //每个子节点对应执行结果
+	node.BtNode
+	children []node.BtNodeInterf //所有子节点
+	result   []def.BtnResult     //每个子节点对应执行结果
 
 }
 
 func NewBtNodeParallelAnd(name string, interval int64) *BtNodeParallelAnd {
 	var btns BtNodeParallelAnd
-	btns.BtNode = NewBtNode(name, interval)
-	btns.children = make([]BtNodeInterf, 0)
-	btns.result = make([]BtnResult, 0)
-	btns.types = ComposeParallelAndNode
-	btns.evaluate = btns.doEvaluate
+	btns.BtNode = node.NewBtNode(name, interval)
+	btns.children = make([]node.BtNodeInterf, 0)
+	btns.result = make([]def.BtnResult, 0)
+	btns.SetTypes(def.ComposeParallelAndNode)
+	btns.SetEvaluate(btns.doEvaluate)
 
 	return &btns
 }
@@ -36,12 +41,12 @@ func (this *BtNodeParallelAnd) doEvaluate() bool {
 //一个子节点失败就失败
 //所有子节点成功才成功
 //一个子节点运行就返回运行
-func (this *BtNodeParallelAnd) Tick() BtnResult {
+func (this *BtNodeParallelAnd) Tick() def.BtnResult {
 
 	//寻找处于running的子节点
 	toTick := make([]int, 0)
 	for i, result := range this.result {
-		if result == Ready || result == Running {
+		if result == def.Ready || result == def.Running {
 			toTick = append(toTick, i)
 		}
 	}
@@ -51,50 +56,39 @@ func (this *BtNodeParallelAnd) Tick() BtnResult {
 	for _, runningIdx := range toTick {
 		localRst := this.children[runningIdx].Tick()
 
-		if localRst == Failed {
+		if localRst == def.Failed {
 			this.Reset()
-			return Failed
+			return def.Failed
 		}
 
-		if localRst == Successed {
+		if localRst == def.Successed {
 			runningCnt--
 		}
 	}
 
 	if runningCnt == 0 {
 		this.Reset()
-		return Successed
+		return def.Successed
 	}
 
-	return Running
+	return def.Running
 }
 
-//准入失败时，执行成功，执行失败时调用
-func (this *BtNodeParallelAnd) Reset() {
-	this.status = Ready
-	for i := range this.result {
-		this.result[i] = Ready
-	}
-	for _, child := range this.children {
-		child.Reset()
-	}
-}
-
-func (this *BtNodeParallelAnd) AddChild(bn BtNodeInterf) {
+func (this *BtNodeParallelAnd) AddChild(bn node.BtNodeInterf) {
 	if this.children == nil {
-		this.children = make([]BtNodeInterf, 0)
-		this.result = make([]BtnResult, 0)
+		this.children = make([]node.BtNodeInterf, 0)
+		this.result = make([]def.BtnResult, 0)
 	}
 	if bn != nil {
 		this.children = append(this.children, bn)
-		this.result = append(this.result, Ready)
+		this.result = append(this.result, def.Ready)
 	}
 
 	this.Reset()
 	return
 }
 
-func (this *BtNodeParallelAnd) RemoveChild(bn BtNodeInterf) {
+func (this *BtNodeParallelAnd) RemoveChild(bn node.BtNodeInterf) {
 	objId := bn.GetId()
 	objIdx := -1
 	for idx, child := range this.children {
@@ -110,4 +104,15 @@ func (this *BtNodeParallelAnd) RemoveChild(bn BtNodeInterf) {
 
 	this.Reset()
 	return
+}
+
+//准入失败时，执行成功，执行失败时调用
+func (this *BtNodeParallelAnd) Reset() {
+	this.SetStatus(def.Ready)
+	for i := range this.result {
+		this.result[i] = def.Ready
+	}
+	for _, child := range this.children {
+		child.Reset()
+	}
 }

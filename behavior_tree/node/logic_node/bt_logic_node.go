@@ -1,18 +1,22 @@
-package behavior_tree
+package logic_node
+
+import (
+	"test/behavior_tree/node"
+)
 
 type BtLogicNode struct {
-	BtNode
-	children []BtNodeInterf //所有子节点
+	node.BtNode
+	children []node.BtNodeInterf //所有子节点
 
 }
 
-func (this *BtLogicNode) GetChildren() []BtNodeInterf {
+func (this *BtLogicNode) GetChildren() []node.BtNodeInterf {
 	return this.children
 }
 
-func (this *BtLogicNode) AddChild(bn BtNodeInterf) {
+func (this *BtLogicNode) AddChild(bn node.BtNodeInterf) {
 	if this.children == nil {
-		this.children = make([]BtNodeInterf, 0)
+		this.children = make([]node.BtNodeInterf, 0)
 	}
 	if bn != nil {
 		this.children = append(this.children, bn)
@@ -22,7 +26,7 @@ func (this *BtLogicNode) AddChild(bn BtNodeInterf) {
 	return
 }
 
-func (this *BtLogicNode) RemoveChild(bn BtNodeInterf) {
+func (this *BtLogicNode) RemoveChild(bn node.BtNodeInterf) {
 	objId := bn.GetId()
 	objIdx := -1
 	for idx, child := range this.children {

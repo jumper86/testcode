@@ -1,20 +1,25 @@
-package behavior_tree
+package logic_node
+
+import (
+	"test/behavior_tree/def"
+	"test/behavior_tree/node"
+)
 
 type BtNodeSelector struct {
-	BtNode
-	children    []BtNodeInterf //所有子节点
+	node.BtNode
+	children    []node.BtNodeInterf //所有子节点
 	activeIdx   int
-	activeChild BtNodeInterf //当前执行子节点
+	activeChild node.BtNodeInterf //当前执行子节点
 }
 
 func NewBtNodeSelector(name string, interval int64) *BtNodeSelector {
 	var btns BtNodeSelector
-	btns.BtNode = NewBtNode(name, interval)
-	btns.children = make([]BtNodeInterf, 0)
+	btns.BtNode = node.NewBtNode(name, interval)
+	btns.children = make([]node.BtNodeInterf, 0)
 	btns.activeIdx = -1
 	btns.activeChild = nil
-	btns.types = ComposeSelectorNode
-	btns.evaluate = btns.doEvaluate
+	btns.SetTypes(def.ComposeSelectorNode)
+	btns.SetEvaluate(btns.doEvaluate)
 
 	return &btns
 }
@@ -35,27 +40,27 @@ func (this *BtNodeSelector) doEvaluate() bool {
 	return false
 }
 
-func (this *BtNodeSelector) Tick() BtnResult {
+func (this *BtNodeSelector) Tick() def.BtnResult {
 
 	if this.activeChild == nil {
-		return Failed
+		return def.Failed
 	}
 
 	childRst := this.activeChild.Tick()
 
 	//运行中
-	if childRst == Running {
-		return Running
+	if childRst == def.Running {
+		return def.Running
 	}
 
 	//成功
-	if childRst == Successed {
+	if childRst == def.Successed {
 		this.Reset()
-		return Successed
+		return def.Successed
 	}
 
 	//失败
-	if childRst == Failed {
+	if childRst == def.Failed {
 		//寻找下一个可以执行的子节点
 		found := false
 		for i := this.activeIdx; i < len(this.children); i++ {
@@ -70,17 +75,17 @@ func (this *BtNodeSelector) Tick() BtnResult {
 
 		if !found {
 			this.Reset()
-			return Failed
+			return def.Failed
 		} else {
-			return Running
+			return def.Running
 		}
 	}
 
-	return Failed
+	return def.Failed
 }
 
 func (this *BtNodeSelector) Reset() {
-	this.status = Ready
+	this.SetStatus(def.Ready)
 	this.activeIdx = -1
 	this.activeChild = nil
 	for _, child := range this.children {
