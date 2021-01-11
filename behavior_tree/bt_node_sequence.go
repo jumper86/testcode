@@ -3,38 +3,27 @@ package behavior_tree
 import "fmt"
 
 type BtNodeSequence struct {
-	BtNode
-	children    []BtNodeInterf //所有子节点
-	activeIdx   int            //当前执行子节点idx
-	activeChild BtNodeInterf   //当前执行子节点
+	BtLogicNode
+	activeIdx   int          //当前执行子节点idx
+	activeChild BtNodeInterf //当前执行子节点
 }
 
-func NewBtNodeSequence(name string, interval int64) BtNodeSequence {
+func NewBtNodeSequence(name string, interval int64) *BtNodeSequence {
 	var btns BtNodeSequence
 	btns.BtNode = NewBtNode(name, interval)
 	btns.children = make([]BtNodeInterf, 0)
 	btns.activeIdx = -1
 	btns.activeChild = nil
 	btns.types = ComposeSequenceNode
-	return btns
-}
-
-func (this *BtNodeSequence) Evaluate() bool {
-	//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
-	if this.status != Ready {
-		return true
-	}
-	if this.activated && this.CheckTimer() && this.DoEvaluate() {
-		this.status = Running
-		return true
-	}
-	return false
+	btns.evaluate = btns.doEvaluate
+	return &btns
 }
 
 //Evaluate 只在开始执行该节点时调用一次
-func doEvaluate(btn BtNodeInterf) bool {
+func (this *BtNodeSequence) doEvaluate() bool {
 	fmt.Printf("sequence.")
-	if len(btn.children) == 0 {
+
+	if this.children == nil || len(this.children) == 0 {
 		return false
 	}
 
@@ -97,40 +86,3 @@ func (this *BtNodeSequence) Reset() {
 		child.Reset()
 	}
 }
-
-func (this *BtNodeSequence) AddChild(bn BtNodeInterf) {
-	if this.children == nil {
-		this.children = make([]BtNodeInterf, 0)
-	}
-	if bn != nil {
-		this.children = append(this.children, bn)
-	}
-
-	this.Reset()
-	return
-}
-
-func (this *BtNodeSequence) RemoveChild(bn BtNodeInterf) {
-	objId := bn.GetId()
-	objIdx := -1
-	for idx, child := range this.children {
-		if child.GetId() == objId {
-			objIdx = idx
-			break
-		}
-	}
-	if objIdx != -1 {
-		this.children = append(this.children[:objIdx], this.children[objIdx+1:]...)
-	}
-
-	this.Reset()
-	return
-}
-
-//
-//func (this *BtNodeSequence) Process() BtnResult {
-//	if this.Evaluate() {
-//		return this.Tick()
-//	}
-//	return Failed
-//}

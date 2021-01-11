@@ -2,35 +2,23 @@ package behavior_tree
 
 type BtNodeParallelFlexible struct {
 	BtNode
-	children []BtNodeInterf //所有子节点
-	evaluate []bool         //每个子节点对应对应准入
+	children    []BtNodeInterf //所有子节点
+	evaluateRst []bool         //每个子节点对应对应准入
 
 }
 
-func NewBtNodeParallelFlexible(name string, interval int64) BtNodeParallelFlexible {
+func NewBtNodeParallelFlexible(name string, interval int64) *BtNodeParallelFlexible {
 	var btns BtNodeParallelFlexible
 	btns.BtNode = NewBtNode(name, interval)
 	btns.children = make([]BtNodeInterf, 0)
-	btns.evaluate = make([]bool, 0)
+	btns.evaluateRst = make([]bool, 0)
 	btns.types = ComposeParallelFlexibleNode
+	btns.evaluate = btns.doEvaluate
 
-	return btns
+	return &btns
 }
 
-func (this *BtNodeParallelFlexible) Evaluate() bool {
-	//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
-	if this.status != Ready {
-		return true
-	}
-	if this.activated && this.CheckTimer() && this.DoEvaluate() {
-		this.status = Running
-		return true
-	}
-	return false
-}
-
-//Evaluate 只在开始执行该节点时调用一次
-func (this *BtNodeParallelFlexible) DoEvaluate() bool {
+func (this *BtNodeParallelFlexible) doEvaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}
@@ -39,7 +27,7 @@ func (this *BtNodeParallelFlexible) DoEvaluate() bool {
 	for i, child := range this.children {
 		if child.Evaluate() {
 			evaluateCnt++
-			this.evaluate[i] = true
+			this.evaluateRst[i] = true
 		}
 	}
 
@@ -56,7 +44,7 @@ func (this *BtNodeParallelFlexible) Tick() BtnResult {
 
 	//寻找处于running的子节点
 	toTick := make([]int, 0)
-	for i, eva := range this.evaluate {
+	for i, eva := range this.evaluateRst {
 		if eva {
 			toTick = append(toTick, i)
 		}
@@ -88,8 +76,8 @@ func (this *BtNodeParallelFlexible) Tick() BtnResult {
 //准入失败时，执行成功，执行失败时调用
 func (this *BtNodeParallelFlexible) Reset() {
 	this.status = Ready
-	for i := range this.evaluate {
-		this.evaluate[i] = false
+	for i := range this.evaluateRst {
+		this.evaluateRst[i] = false
 	}
 	for _, child := range this.children {
 		child.Reset()
@@ -99,11 +87,11 @@ func (this *BtNodeParallelFlexible) Reset() {
 func (this *BtNodeParallelFlexible) AddChild(bn BtNodeInterf) {
 	if this.children == nil {
 		this.children = make([]BtNodeInterf, 0)
-		this.evaluate = make([]bool, 0)
+		this.evaluateRst = make([]bool, 0)
 	}
 	if bn != nil {
 		this.children = append(this.children, bn)
-		this.evaluate = append(this.evaluate, false)
+		this.evaluateRst = append(this.evaluateRst, false)
 	}
 
 	this.Reset()
@@ -121,18 +109,10 @@ func (this *BtNodeParallelFlexible) RemoveChild(bn BtNodeInterf) {
 	}
 	if objIdx != -1 {
 		this.children = append(this.children[:objIdx], this.children[objIdx+1:]...)
-		this.evaluate = append(this.evaluate[:objIdx], this.evaluate[objIdx+1:]...)
+		this.evaluateRst = append(this.evaluateRst[:objIdx], this.evaluateRst[objIdx+1:]...)
 
 	}
 
 	this.Reset()
 	return
 }
-
-//
-//func (this *BtNodeParallelFlexible) Process() BtnResult {
-//	if this.Evaluate() {
-//		return this.Tick()
-//	}
-//	return Failed
-//}

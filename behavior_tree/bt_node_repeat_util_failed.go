@@ -1,24 +1,19 @@
 package behavior_tree
 
 type BtNodeRepeatUtilFail struct {
-	BtNode
+	BtDecoratorNode
 	child BtNodeInterf //所有子节点
 }
 
-func (this *BtNodeRepeatUtilFail) Evaluate() bool {
-	//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
-	if this.status != Ready {
-		return true
-	}
-	if this.activated && this.CheckTimer() && this.DoEvaluate() {
-		this.status = Running
-		return true
-	}
-	return false
+func NewBtNodeRepeatUtilFail(name string, interval int64) *BtNodeRepeatUtilFail {
+	var btns BtNodeRepeatUtilFail
+	btns.BtNode = NewBtNode(name, interval)
+	btns.types = DecoratorRepeatUtilFailedNode
+	btns.evaluate = btns.doEvaluate
+	return &btns
 }
 
-//Evaluate 只在开始执行该节点时调用一次
-func (this *BtNodeRepeatUtilFail) DoEvaluate() bool {
+func (this *BtNodeRepeatUtilFail) doEvaluate() bool {
 	return this.child.Evaluate()
 }
 
@@ -40,22 +35,4 @@ func (this *BtNodeRepeatUtilFail) Tick() BtnResult {
 
 	this.Reset()
 	return Failed
-}
-
-//准入失败时，执行成功，执行失败时调用
-func (this *BtNodeRepeatUtilFail) Reset() {
-	this.status = Ready
-	this.child.Reset()
-}
-
-func (this *BtNodeRepeatUtilFail) AddChild(bn BtNodeInterf) {
-	this.child = bn
-	this.Reset()
-	return
-}
-
-func (this *BtNodeRepeatUtilFail) RemoveChild(bn BtNodeInterf) {
-	this.Reset()
-	this.child = nil
-	return
 }

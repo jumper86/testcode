@@ -7,30 +7,19 @@ type BtNodeSelector struct {
 	activeChild BtNodeInterf //当前执行子节点
 }
 
-func NewBtNodeSelector(name string, interval int64) BtNodeSelector {
+func NewBtNodeSelector(name string, interval int64) *BtNodeSelector {
 	var btns BtNodeSelector
 	btns.BtNode = NewBtNode(name, interval)
 	btns.children = make([]BtNodeInterf, 0)
 	btns.activeIdx = -1
 	btns.activeChild = nil
 	btns.types = ComposeSelectorNode
+	btns.evaluate = btns.doEvaluate
 
-	return btns
+	return &btns
 }
 
-func (this *BtNodeSelector) Evaluate() bool {
-	//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
-	if this.status != Ready {
-		return true
-	}
-	if this.activated && this.CheckTimer() && this.DoEvaluate() {
-		this.status = Running
-		return true
-	}
-	return false
-}
-
-func (this *BtNodeSelector) DoEvaluate() bool {
+func (this *BtNodeSelector) doEvaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}
@@ -98,40 +87,3 @@ func (this *BtNodeSelector) Reset() {
 		child.Reset()
 	}
 }
-
-func (this *BtNodeSelector) AddChild(bn BtNodeInterf) {
-	if this.children == nil {
-		this.children = make([]BtNodeInterf, 0)
-	}
-	if bn != nil {
-		this.children = append(this.children, bn)
-	}
-
-	this.Reset()
-	return
-}
-
-func (this *BtNodeSelector) RemoveChild(bn BtNodeInterf) {
-	objId := bn.GetId()
-	objIdx := -1
-	for idx, child := range this.children {
-		if child.GetId() == objId {
-			objIdx = idx
-			break
-		}
-	}
-	if objIdx != -1 {
-		this.children = append(this.children[:objIdx], this.children[objIdx+1:]...)
-	}
-
-	this.Reset()
-	return
-}
-
-//
-//func (this *BtNodeSelector) Process() BtnResult {
-//	if this.Evaluate() {
-//		return this.Tick()
-//	}
-//	return Failed
-//}

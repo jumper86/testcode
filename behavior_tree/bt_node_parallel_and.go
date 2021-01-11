@@ -7,30 +7,19 @@ type BtNodeParallelAnd struct {
 
 }
 
-func NewBtNodeParallelAnd(name string, interval int64) BtNodeParallelAnd {
+func NewBtNodeParallelAnd(name string, interval int64) *BtNodeParallelAnd {
 	var btns BtNodeParallelAnd
 	btns.BtNode = NewBtNode(name, interval)
 	btns.children = make([]BtNodeInterf, 0)
 	btns.result = make([]BtnResult, 0)
 	btns.types = ComposeParallelAndNode
+	btns.evaluate = btns.doEvaluate
 
-	return btns
-}
-
-func (this *BtNodeParallelAnd) Evaluate() bool {
-	//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
-	if this.status != Ready {
-		return true
-	}
-	if this.activated && this.CheckTimer() && this.DoEvaluate() {
-		this.status = Running
-		return true
-	}
-	return false
+	return &btns
 }
 
 //Evaluate 只在开始执行该节点时调用一次
-func (this *BtNodeParallelAnd) DoEvaluate() bool {
+func (this *BtNodeParallelAnd) doEvaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}
@@ -122,11 +111,3 @@ func (this *BtNodeParallelAnd) RemoveChild(bn BtNodeInterf) {
 	this.Reset()
 	return
 }
-
-//
-//func (this *BtNodeParallelAnd) Process() BtnResult {
-//	if this.Evaluate() {
-//		return this.Tick()
-//	}
-//	return Failed
-//}

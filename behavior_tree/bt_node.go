@@ -12,8 +12,8 @@ type BtNode struct {
 	interval          int64    //运行cd, 单位纳秒
 	lastTimeEvaluated int64    //上次运行时间
 
-	evaluate func(btn BtNodeInterf) bool //个性验证
-	status   BtnResult                   //节点运行状态
+	evaluate func() bool //个性验证
+	status   BtnResult   //节点运行状态
 }
 
 //////////////////////////////////////////////
@@ -56,11 +56,16 @@ func (this *BtNode) CheckTimer() bool {
 	return false
 }
 
+//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
 func (this *BtNode) Evaluate() bool {
+	if this.status != Ready {
+		return true
+	}
+
 	if !(this.activated && this.CheckTimer()) {
 		return false
 	}
-	if this.evaluate != nil && !this.evaluate(this) {
+	if this.evaluate != nil && !this.evaluate() {
 		return false
 	}
 
@@ -79,11 +84,4 @@ func (this *BtNode) Process() BtnResult {
 }
 
 func (this *BtNode) Reset() {
-}
-
-func (this *BtNode) AddChild(bn BtNodeInterf) {
-	return
-}
-func (this *BtNode) RemoveChild(bn BtNodeInterf) {
-	return
 }

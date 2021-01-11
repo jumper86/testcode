@@ -7,30 +7,19 @@ type BtNodeParallelOr struct {
 
 }
 
-func NewBtNodeParallelOr(name string, interval int64) BtNodeParallelOr {
+func NewBtNodeParallelOr(name string, interval int64) *BtNodeParallelOr {
 	var btns BtNodeParallelOr
 	btns.BtNode = NewBtNode(name, interval)
 	btns.children = make([]BtNodeInterf, 0)
 	btns.result = make([]BtnResult, 0)
 	btns.types = ComposeParallelOrNode
+	btns.evaluate = btns.doEvaluate
 
-	return btns
-}
-
-func (this *BtNodeParallelOr) Evaluate() bool {
-	//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
-	if this.status != Ready {
-		return true
-	}
-	if this.activated && this.CheckTimer() && this.DoEvaluate() {
-		this.status = Running
-		return true
-	}
-	return false
+	return &btns
 }
 
 //Evaluate 只在开始执行该节点时调用一次
-func (this *BtNodeParallelOr) DoEvaluate() bool {
+func (this *BtNodeParallelOr) doEvaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}
@@ -106,11 +95,3 @@ func (this *BtNodeParallelOr) RemoveChild(bn BtNodeInterf) {
 	this.Reset()
 	return
 }
-
-//
-//func (this *BtNodeParallelOr) Process() BtnResult {
-//	if this.Evaluate() {
-//		return this.Tick()
-//	}
-//	return Failed
-//}
