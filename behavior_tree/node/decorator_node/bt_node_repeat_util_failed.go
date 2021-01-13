@@ -14,11 +14,10 @@ func NewBtNodeRepeatUtilFail(name string, interval int64) *BtNodeRepeatUtilFaile
 	var btns BtNodeRepeatUtilFailed
 	btns.BtNode = node.NewBtNode(name, interval)
 	btns.SetTypes(def.DecoratorRepeatUtilFailedNode)
-	btns.SetEvaluate(btns.doEvaluate)
 	return &btns
 }
 
-func (this *BtNodeRepeatUtilFailed) doEvaluate() bool {
+func (this *BtNodeRepeatUtilFailed) Evaluate() bool {
 	return this.child.Evaluate()
 }
 

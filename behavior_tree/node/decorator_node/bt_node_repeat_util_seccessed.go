@@ -13,12 +13,11 @@ type BtNodeRepeatUtilSeccessed struct {
 func NewBtNodeRepeatUtilSeccessed(name string, interval int64) *BtNodeRepeatUtilSeccessed {
 	var btns BtNodeRepeatUtilSeccessed
 	btns.BtNode = node.NewBtNode(name, interval)
-	btns.SetTypes(def.DecoratorRepeatUtilFailedNode)
-	btns.SetEvaluate(btns.doEvaluate)
+	btns.SetTypes(def.DecoratorRepeatUtilSeccessedNode)
 	return &btns
 }
 
-func (this *BtNodeRepeatUtilSeccessed) doEvaluate() bool {
+func (this *BtNodeRepeatUtilSeccessed) Evaluate() bool {
 	return this.child.Evaluate()
 }
 

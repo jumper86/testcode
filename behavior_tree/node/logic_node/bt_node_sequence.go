@@ -1,7 +1,6 @@
 package logic_node
 
 import (
-	"fmt"
 	"testcode/behavior_tree/def"
 	"testcode/behavior_tree/node"
 )
@@ -19,13 +18,11 @@ func NewBtNodeSequence(name string, interval int64) *BtNodeSequence {
 	btns.activeIdx = -1
 	btns.activeChild = nil
 	btns.SetTypes(def.ComposeSequenceNode)
-	btns.SetEvaluate(btns.doEvaluate)
 	return &btns
 }
 
 //Evaluate 只在开始执行该节点时调用一次
-func (this *BtNodeSequence) doEvaluate() bool {
-	fmt.Printf("sequence.")
+func (this *BtNodeSequence) Evaluate() bool {
 
 	if this.children == nil || len(this.children) == 0 {
 		return false

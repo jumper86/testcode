@@ -5,21 +5,6 @@ import (
 	"time"
 )
 
-func Process(btni BtNodeInterf) def.BtnResult {
-	if !btni.Evaluate() {
-		return def.Failed
-	}
-	if btni.GetStatus() != def.Run {
-		btni.SetStatus(def.Run)
-	}
-
-	tmpRst := btni.Tick()
-	if tmpRst != def.Running {
-		btni.Reset()
-	}
-	return tmpRst
-}
-
 type BtNode struct {
 	id                int64       //node id，在删除时需要使用
 	types             def.BtnType //节点类型
@@ -62,11 +47,6 @@ func (this *BtNode) SetTypes(t def.BtnType) {
 	return
 }
 
-func (this *BtNode) SetEvaluate(f func() bool) {
-	this.evaluate = f
-	return
-}
-
 func (this *BtNode) SetStatus(s def.BtnStatus) {
 	this.status = s
 }
@@ -83,6 +63,10 @@ func (this *BtNode) Disable() {
 	this.activated = false
 }
 
+func (this *BtNode) GetActive() bool {
+	return this.activated
+}
+
 func (this *BtNode) CheckTimer() bool {
 	if time.Now().UnixNano()-this.lastTimeEvaluated > this.interval {
 		return true
@@ -90,26 +74,13 @@ func (this *BtNode) CheckTimer() bool {
 	return false
 }
 
-//note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
-//	Evaluate 函数当目的在于防止不必要的 Tick 调用
-func (this *BtNode) Evaluate() bool {
-	if this.status == def.Run {
-		return true
-	}
-
-	if !(this.activated && this.CheckTimer()) {
-		return false
-	}
-	if this.evaluate != nil && !this.evaluate() {
-		return false
-	}
-
-	return true
-}
-
 func (this *BtNode) Tick() def.BtnResult {
 	return def.Successed
 }
 
 func (this *BtNode) Reset() {
+}
+
+func (this *BtNode) Evaluate() bool {
+	return true
 }

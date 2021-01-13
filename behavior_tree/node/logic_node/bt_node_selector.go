@@ -18,12 +18,11 @@ func NewBtNodeSelector(name string, interval int64) *BtNodeSelector {
 	btns.activeIdx = -1
 	btns.activeChild = nil
 	btns.SetTypes(def.ComposeSelectorNode)
-	btns.SetEvaluate(btns.doEvaluate)
 
 	return &btns
 }
 
-func (this *BtNodeSelector) doEvaluate() bool {
+func (this *BtNodeSelector) Evaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}

@@ -26,12 +26,11 @@ func NewBtNodeAnchorLoop(name string, interval int64, anchorIdx int) *BtNodeAnch
 	btns.activeChild = nil
 	btns.anchorIdx = anchorIdx
 	btns.SetTypes(def.ComposeAnchorLoopNode)
-	btns.SetEvaluate(btns.doEvaluate)
 
 	return &btns
 }
 
-func (this *BtNodeAnchorLoop) doEvaluate() bool {
+func (this *BtNodeAnchorLoop) Evaluate() bool {
 	l := len(this.children)
 	if l == 0 || this.anchorIdx >= l {
 		return false

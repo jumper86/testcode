@@ -21,7 +21,8 @@ const (
 	DecoratorRepeatUtilFailedNode    BtnType = 54
 	DecoratorRepeatUtilSeccessedNode BtnType = 55
 	//行为节点
-	Walk BtnType = 100
+	Action1 BtnType = 100
+	Action2 BtnType = 100
 )
 
 //节点运行结果

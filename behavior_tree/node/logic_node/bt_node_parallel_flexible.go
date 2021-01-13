@@ -17,12 +17,11 @@ func NewBtNodeParallelFlexible(name string, interval int64) *BtNodeParallelFlexi
 	btns.children = make([]node.BtNodeInterf, 0)
 	btns.evaluateRst = make([]bool, 0)
 	btns.SetTypes(def.ComposeParallelFlexibleNode)
-	btns.SetEvaluate(btns.doEvaluate)
 
 	return &btns
 }
 
-func (this *BtNodeParallelFlexible) doEvaluate() bool {
+func (this *BtNodeParallelFlexible) Evaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}

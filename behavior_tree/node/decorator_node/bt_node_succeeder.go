@@ -14,11 +14,10 @@ func NewBtNodeSucceeder(name string, interval int64) *BtNodeSucceeder {
 	var btns BtNodeSucceeder
 	btns.BtNode = node.NewBtNode(name, interval)
 	btns.SetTypes(def.DecoratorSucceederNode)
-	btns.SetEvaluate(btns.doEvaluate)
 	return &btns
 }
 
-func (this *BtNodeSucceeder) doEvaluate() bool {
+func (this *BtNodeSucceeder) Evaluate() bool {
 	return this.child.Evaluate()
 }
 

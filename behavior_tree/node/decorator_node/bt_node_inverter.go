@@ -14,11 +14,10 @@ func NewBtNodeInverter(name string, interval int64) *BtNodeInverter {
 	var btns BtNodeInverter
 	btns.BtNode = node.NewBtNode(name, interval)
 	btns.SetTypes(def.DecoratorInverterNode)
-	btns.SetEvaluate(btns.doEvaluate)
 	return &btns
 }
 
-func (this *BtNodeInverter) doEvaluate() bool {
+func (this *BtNodeInverter) Evaluate() bool {
 	return this.child.Evaluate()
 }
 

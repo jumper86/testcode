@@ -17,13 +17,12 @@ func NewBtNodeParallelOr(name string, interval int64) *BtNodeParallelOr {
 	btns.children = make([]node.BtNodeInterf, 0)
 	btns.result = make([]def.BtnResult, 0)
 	btns.SetTypes(def.ComposeParallelOrNode)
-	btns.SetEvaluate(btns.doEvaluate)
 
 	return &btns
 }
 
 //Evaluate 只在开始执行该节点时调用一次
-func (this *BtNodeParallelOr) doEvaluate() bool {
+func (this *BtNodeParallelOr) Evaluate() bool {
 	if len(this.children) == 0 {
 		return false
 	}

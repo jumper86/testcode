@@ -15,12 +15,11 @@ func NewBtNodeIf(name string, interval int64, cond func() bool) *BtNodeIf {
 	var btns BtNodeIf
 	btns.BtNode = node.NewBtNode(name, interval)
 	btns.SetTypes(def.DecoratorIfNode)
-	btns.SetEvaluate(btns.doEvaluate)
 	btns.cond = cond
 	return &btns
 }
 
-func (this *BtNodeIf) doEvaluate() bool {
+func (this *BtNodeIf) Evaluate() bool {
 	if !this.cond() {
 		return false
 	}
