@@ -6,9 +6,8 @@ import (
 )
 
 type BtNodeParallelFlexible struct {
-	node.BtNode
-	children    []node.BtNodeInterf //所有子节点
-	evaluateRst []bool              //每个子节点对应对应准入
+	BtLogicNode
+	evaluateRst []bool //每个子节点对应对应准入
 
 }
 
@@ -61,7 +60,6 @@ func (this *BtNodeParallelFlexible) Tick() def.BtnResult {
 		localRst := this.children[runningIdx].Process()
 
 		if localRst == def.Failed {
-			this.Reset()
 			return def.Failed
 		}
 
@@ -71,7 +69,6 @@ func (this *BtNodeParallelFlexible) Tick() def.BtnResult {
 	}
 
 	if runningCnt == 0 {
-		this.Reset()
 		return def.Successed
 	}
 
@@ -120,4 +117,19 @@ func (this *BtNodeParallelFlexible) Reset() {
 	for _, child := range this.children {
 		child.Reset()
 	}
+}
+
+func (this *BtNodeParallelFlexible) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }

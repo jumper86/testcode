@@ -63,7 +63,6 @@ func (this *BtNodeSequence) Tick() def.BtnResult {
 
 	if childRst == def.Successed {
 		if this.activeIdx == len(this.children)-1 {
-			this.Reset()
 			return def.Successed
 		} else {
 			this.activeIdx++
@@ -74,7 +73,6 @@ func (this *BtNodeSequence) Tick() def.BtnResult {
 
 	//结果 失败
 	if childRst == def.Failed {
-		this.Reset()
 		return def.Failed
 	}
 
@@ -89,4 +87,19 @@ func (this *BtNodeSequence) Reset() {
 	for _, child := range this.children {
 		child.Reset()
 	}
+}
+
+func (this *BtNodeSequence) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }

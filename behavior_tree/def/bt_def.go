@@ -24,13 +24,20 @@ const (
 	Walk BtnType = 100
 )
 
-//节点运行状态
+//节点运行结果
 type BtnResult int
 
 const (
-	//None      BtnResult = 0
-	Ready     BtnResult = 1
+	None      BtnResult = 0
 	Running   BtnResult = 2
 	Successed BtnResult = 3
 	Failed    BtnResult = 4
+)
+
+//节点当前状态
+type BtnStatus int
+
+const (
+	Ready BtnStatus = 1
+	Run   BtnStatus = 2
 )

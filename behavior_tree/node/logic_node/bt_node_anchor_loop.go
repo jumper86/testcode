@@ -12,8 +12,7 @@ import (
 //	比如 a 节点表示追击，b 节点表示攻击
 
 type BtNodeAnchorLoop struct {
-	node.BtNode
-	children    []node.BtNodeInterf //所有子节点
+	BtLogicNode
 	activeIdx   int
 	activeChild node.BtNodeInterf //当前执行子节点
 	anchorIdx   int               //锚点
@@ -64,6 +63,7 @@ func (this *BtNodeAnchorLoop) Tick() def.BtnResult {
 
 	//成功
 	if childRst == def.Successed {
+		//note: 这个reset需要保留
 		this.Reset()
 		this.activeIdx = this.anchorIdx
 		this.activeChild = this.children[this.activeIdx]
@@ -91,4 +91,19 @@ func (this *BtNodeAnchorLoop) Reset() {
 	for _, child := range this.children {
 		child.Reset()
 	}
+}
+
+func (this *BtNodeAnchorLoop) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }

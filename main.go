@@ -10,5 +10,5 @@ func main() {
 	snode := logic_node.NewBtNodeSequence("s", 0)
 	var baseNode node.BtNodeInterf
 	baseNode = snode
-	baseNode.Evaluate()
+	baseNode.Process()
 }

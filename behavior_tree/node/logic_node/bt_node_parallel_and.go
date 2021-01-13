@@ -6,9 +6,8 @@ import (
 )
 
 type BtNodeParallelAnd struct {
-	node.BtNode
-	children []node.BtNodeInterf //所有子节点
-	result   []def.BtnResult     //每个子节点对应执行结果
+	BtLogicNode
+	result []def.BtnResult //每个子节点对应执行结果
 
 }
 
@@ -46,7 +45,7 @@ func (this *BtNodeParallelAnd) Tick() def.BtnResult {
 	//寻找处于running的子节点
 	toTick := make([]int, 0)
 	for i, result := range this.result {
-		if result == def.Ready || result == def.Running {
+		if result == def.None || result == def.Running {
 			toTick = append(toTick, i)
 		}
 	}
@@ -57,7 +56,6 @@ func (this *BtNodeParallelAnd) Tick() def.BtnResult {
 		localRst := this.children[runningIdx].Process()
 
 		if localRst == def.Failed {
-			this.Reset()
 			return def.Failed
 		}
 
@@ -67,7 +65,6 @@ func (this *BtNodeParallelAnd) Tick() def.BtnResult {
 	}
 
 	if runningCnt == 0 {
-		this.Reset()
 		return def.Successed
 	}
 
@@ -81,7 +78,7 @@ func (this *BtNodeParallelAnd) AddChild(bn node.BtNodeInterf) {
 	}
 	if bn != nil {
 		this.children = append(this.children, bn)
-		this.result = append(this.result, def.Ready)
+		this.result = append(this.result, def.None)
 	}
 
 	this.Reset()
@@ -110,9 +107,24 @@ func (this *BtNodeParallelAnd) RemoveChild(bn node.BtNodeInterf) {
 func (this *BtNodeParallelAnd) Reset() {
 	this.SetStatus(def.Ready)
 	for i := range this.result {
-		this.result[i] = def.Ready
+		this.result[i] = def.None
 	}
 	for _, child := range this.children {
 		child.Reset()
 	}
+}
+
+func (this *BtNodeParallelAnd) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }

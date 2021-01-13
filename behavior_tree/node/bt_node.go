@@ -14,7 +14,7 @@ type BtNode struct {
 	lastTimeEvaluated int64       //上次运行时间
 
 	evaluate func() bool   //个性验证
-	status   def.BtnResult //节点运行状态
+	status   def.BtnStatus //节点运行状态
 }
 
 //////////////////////////////////////////////
@@ -52,11 +52,11 @@ func (this *BtNode) SetEvaluate(f func() bool) {
 	return
 }
 
-func (this *BtNode) SetStatus(s def.BtnResult) {
+func (this *BtNode) SetStatus(s def.BtnStatus) {
 	this.status = s
 }
 
-func (this *BtNode) GetStatus() def.BtnResult {
+func (this *BtNode) GetStatus() def.BtnStatus {
 	return this.status
 }
 
@@ -76,8 +76,9 @@ func (this *BtNode) CheckTimer() bool {
 }
 
 //note: 保证只在第一次执行组合节点的时候，进行一次准入检查，即调用 Evaluate
+//	Evaluate 函数当目的在于防止不必要的 Tick 调用
 func (this *BtNode) Evaluate() bool {
-	if this.status != def.Ready {
+	if this.status == def.Run {
 		return true
 	}
 
@@ -96,10 +97,7 @@ func (this *BtNode) Tick() def.BtnResult {
 }
 
 func (this *BtNode) Process() def.BtnResult {
-	if !this.Evaluate() {
-		return def.Failed
-	}
-	return this.Tick()
+	return def.Successed
 }
 
 func (this *BtNode) Reset() {

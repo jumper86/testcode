@@ -37,6 +37,20 @@ func (this *BtNodeRepeatUtilFailed) Tick() def.BtnResult {
 		return def.Running
 	}
 
-	this.Reset()
 	return def.Failed
+}
+
+func (this *BtNodeRepeatUtilFailed) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }

@@ -6,9 +6,8 @@ import (
 )
 
 type BtNodeParallelOr struct {
-	node.BtNode
-	children []node.BtNodeInterf //所有子节点
-	result   []def.BtnResult     //每个子节点对应执行结果
+	BtLogicNode
+	result []def.BtnResult //每个子节点对应执行结果
 
 }
 
@@ -45,11 +44,9 @@ func (this *BtNodeParallelOr) Tick() def.BtnResult {
 	for _, child := range this.children {
 		localRst := child.Process()
 		if localRst == def.Failed {
-			this.Reset()
 			return def.Failed
 		}
 		if localRst == def.Successed {
-			this.Reset()
 			return def.Successed
 		}
 	}
@@ -64,7 +61,7 @@ func (this *BtNodeParallelOr) AddChild(bn node.BtNodeInterf) {
 	}
 	if bn != nil {
 		this.children = append(this.children, bn)
-		this.result = append(this.result, def.Ready)
+		this.result = append(this.result, def.None)
 	}
 
 	this.Reset()
@@ -94,9 +91,24 @@ func (this *BtNodeParallelOr) RemoveChild(bn node.BtNodeInterf) {
 func (this *BtNodeParallelOr) Reset() {
 	this.SetStatus(def.Ready)
 	for i := range this.result {
-		this.result[i] = def.Ready
+		this.result[i] = def.None
 	}
 	for _, child := range this.children {
 		child.Reset()
 	}
+}
+
+func (this *BtNodeParallelOr) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }

@@ -6,8 +6,7 @@ import (
 )
 
 type BtNodeSelector struct {
-	node.BtNode
-	children    []node.BtNodeInterf //所有子节点
+	BtLogicNode
 	activeIdx   int
 	activeChild node.BtNodeInterf //当前执行子节点
 }
@@ -55,7 +54,6 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 
 	//成功
 	if childRst == def.Successed {
-		this.Reset()
 		return def.Successed
 	}
 
@@ -74,7 +72,6 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 		}
 
 		if !found {
-			this.Reset()
 			return def.Failed
 		} else {
 			return def.Running
@@ -91,4 +88,19 @@ func (this *BtNodeSelector) Reset() {
 	for _, child := range this.children {
 		child.Reset()
 	}
+}
+
+func (this *BtNodeSelector) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }

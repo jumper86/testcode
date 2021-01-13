@@ -7,8 +7,8 @@ type BtNodeInterf interface {
 	GetTypes() def.BtnType //获取节点类型
 	SetTypes(t def.BtnType)
 	SetEvaluate(f func() bool)
-	SetStatus(s def.BtnResult)
-	GetStatus() def.BtnResult
+	SetStatus(s def.BtnStatus)
+	GetStatus() def.BtnStatus
 
 	Enable()
 	Disable()

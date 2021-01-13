@@ -32,15 +32,28 @@ func (this *BtNodeInverter) Tick() def.BtnResult {
 
 	//结果 成功
 	if childRst == def.Successed {
-		this.Reset()
 		return def.Failed
 	}
 
 	//结果 失败
 	if childRst == def.Failed {
-		this.Reset()
 		return def.Successed
 	}
 
 	return def.Failed
+}
+
+func (this *BtNodeInverter) Process() def.BtnResult {
+	if !this.Evaluate() {
+		return def.Failed
+	}
+	if this.GetStatus() != def.Run {
+		this.SetStatus(def.Run)
+	}
+
+	tmpRst := this.Tick()
+	if tmpRst != def.Running {
+		this.Reset()
+	}
+	return tmpRst
 }
