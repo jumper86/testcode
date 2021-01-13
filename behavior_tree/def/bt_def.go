@@ -12,6 +12,7 @@ const (
 	ComposeParallelAndNode      BtnType = 13
 	ComposeParallelOrNode       BtnType = 14
 	ComposeParallelFlexibleNode BtnType = 15
+	ComposeAnchorLoopNode       BtnType = 16
 
 	//装饰器节点
 	DecoratorIfNode                  BtnType = 51
