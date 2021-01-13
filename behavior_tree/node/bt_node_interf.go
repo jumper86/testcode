@@ -16,8 +16,7 @@ type BtNodeInterf interface {
 	CheckTimer() bool
 	Evaluate() bool
 	Tick() def.BtnResult
-	Process() def.BtnResult //节点运行逻辑
-	Reset()                 //清理自身以及子节点数据
+	Reset() //清理自身以及子节点数据
 
 }
 

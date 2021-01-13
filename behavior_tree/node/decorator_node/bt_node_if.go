@@ -33,7 +33,7 @@ func (this *BtNodeIf) Tick() def.BtnResult {
 		return def.Failed
 	}
 
-	childRst := this.child.Process()
+	childRst := node.Process(this.child)
 	//结果 运行中
 	if childRst == def.Running {
 		return def.Running
@@ -50,19 +50,4 @@ func (this *BtNodeIf) Tick() def.BtnResult {
 	}
 
 	return def.Failed
-}
-
-func (this *BtNodeIf) Process() def.BtnResult {
-	if !this.Evaluate() {
-		return def.Failed
-	}
-	if this.GetStatus() != def.Run {
-		this.SetStatus(def.Run)
-	}
-
-	tmpRst := this.Tick()
-	if tmpRst != def.Running {
-		this.Reset()
-	}
-	return tmpRst
 }

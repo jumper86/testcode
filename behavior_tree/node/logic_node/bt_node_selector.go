@@ -45,7 +45,7 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 		return def.Failed
 	}
 
-	childRst := this.activeChild.Process()
+	childRst := node.Process(this.activeChild)
 
 	//运行中
 	if childRst == def.Running {
@@ -88,19 +88,4 @@ func (this *BtNodeSelector) Reset() {
 	for _, child := range this.children {
 		child.Reset()
 	}
-}
-
-func (this *BtNodeSelector) Process() def.BtnResult {
-	if !this.Evaluate() {
-		return def.Failed
-	}
-	if this.GetStatus() != def.Run {
-		this.SetStatus(def.Run)
-	}
-
-	tmpRst := this.Tick()
-	if tmpRst != def.Running {
-		this.Reset()
-	}
-	return tmpRst
 }

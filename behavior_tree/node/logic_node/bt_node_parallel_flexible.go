@@ -57,7 +57,7 @@ func (this *BtNodeParallelFlexible) Tick() def.BtnResult {
 
 	//执行每个running子节点的tick
 	for _, runningIdx := range toTick {
-		localRst := this.children[runningIdx].Process()
+		localRst := node.Process(this.children[runningIdx])
 
 		if localRst == def.Failed {
 			return def.Failed
@@ -117,19 +117,4 @@ func (this *BtNodeParallelFlexible) Reset() {
 	for _, child := range this.children {
 		child.Reset()
 	}
-}
-
-func (this *BtNodeParallelFlexible) Process() def.BtnResult {
-	if !this.Evaluate() {
-		return def.Failed
-	}
-	if this.GetStatus() != def.Run {
-		this.SetStatus(def.Run)
-	}
-
-	tmpRst := this.Tick()
-	if tmpRst != def.Running {
-		this.Reset()
-	}
-	return tmpRst
 }

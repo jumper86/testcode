@@ -5,6 +5,21 @@ import (
 	"time"
 )
 
+func Process(btni BtNodeInterf) def.BtnResult {
+	if !btni.Evaluate() {
+		return def.Failed
+	}
+	if btni.GetStatus() != def.Run {
+		btni.SetStatus(def.Run)
+	}
+
+	tmpRst := btni.Tick()
+	if tmpRst != def.Running {
+		btni.Reset()
+	}
+	return tmpRst
+}
+
 type BtNode struct {
 	id                int64       //node id，在删除时需要使用
 	types             def.BtnType //节点类型
@@ -93,10 +108,6 @@ func (this *BtNode) Evaluate() bool {
 }
 
 func (this *BtNode) Tick() def.BtnResult {
-	return def.Successed
-}
-
-func (this *BtNode) Process() def.BtnResult {
 	return def.Successed
 }
 

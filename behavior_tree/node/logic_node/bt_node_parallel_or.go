@@ -42,7 +42,7 @@ func (this *BtNodeParallelOr) doEvaluate() bool {
 func (this *BtNodeParallelOr) Tick() def.BtnResult {
 
 	for _, child := range this.children {
-		localRst := child.Process()
+		localRst := node.Process(child)
 		if localRst == def.Failed {
 			return def.Failed
 		}
@@ -96,19 +96,4 @@ func (this *BtNodeParallelOr) Reset() {
 	for _, child := range this.children {
 		child.Reset()
 	}
-}
-
-func (this *BtNodeParallelOr) Process() def.BtnResult {
-	if !this.Evaluate() {
-		return def.Failed
-	}
-	if this.GetStatus() != def.Run {
-		this.SetStatus(def.Run)
-	}
-
-	tmpRst := this.Tick()
-	if tmpRst != def.Running {
-		this.Reset()
-	}
-	return tmpRst
 }

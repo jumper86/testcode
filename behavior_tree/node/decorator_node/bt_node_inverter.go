@@ -24,7 +24,7 @@ func (this *BtNodeInverter) doEvaluate() bool {
 
 func (this *BtNodeInverter) Tick() def.BtnResult {
 
-	childRst := this.child.Process()
+	childRst := node.Process(this.child)
 	//结果 运行中
 	if childRst == def.Running {
 		return def.Running
@@ -41,19 +41,4 @@ func (this *BtNodeInverter) Tick() def.BtnResult {
 	}
 
 	return def.Failed
-}
-
-func (this *BtNodeInverter) Process() def.BtnResult {
-	if !this.Evaluate() {
-		return def.Failed
-	}
-	if this.GetStatus() != def.Run {
-		this.SetStatus(def.Run)
-	}
-
-	tmpRst := this.Tick()
-	if tmpRst != def.Running {
-		this.Reset()
-	}
-	return tmpRst
 }

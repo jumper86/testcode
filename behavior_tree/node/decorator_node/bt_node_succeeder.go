@@ -24,26 +24,11 @@ func (this *BtNodeSucceeder) doEvaluate() bool {
 
 func (this *BtNodeSucceeder) Tick() def.BtnResult {
 
-	childRst := this.child.Process()
+	childRst := node.Process(this.child)
 	//结果 运行中
 	if childRst == def.Running {
 		return def.Running
 	}
 
 	return def.Successed
-}
-
-func (this *BtNodeSucceeder) Process() def.BtnResult {
-	if !this.Evaluate() {
-		return def.Failed
-	}
-	if this.GetStatus() != def.Run {
-		this.SetStatus(def.Run)
-	}
-
-	tmpRst := this.Tick()
-	if tmpRst != def.Running {
-		this.Reset()
-	}
-	return tmpRst
 }
