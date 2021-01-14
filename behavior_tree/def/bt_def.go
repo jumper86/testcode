@@ -22,7 +22,7 @@ const (
 	DecoratorRepeatUtilSeccessedNode BtnType = 55
 	//行为节点
 	Action1 BtnType = 100
-	Action2 BtnType = 100
+	Action2 BtnType = 101
 )
 
 //节点运行结果

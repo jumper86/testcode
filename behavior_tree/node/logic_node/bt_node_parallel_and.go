@@ -28,7 +28,7 @@ func (this *BtNodeParallelAnd) Evaluate() bool {
 	}
 
 	for _, child := range this.children {
-		if !child.Evaluate() {
+		if !node.Evaluate(child) {
 			return false
 		}
 	}

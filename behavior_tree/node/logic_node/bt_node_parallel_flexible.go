@@ -28,7 +28,7 @@ func (this *BtNodeParallelFlexible) Evaluate() bool {
 
 	evaluateCnt := 0
 	for i, child := range this.children {
-		if child.Evaluate() {
+		if node.Evaluate(child) {
 			evaluateCnt++
 			this.evaluateRst[i] = true
 		}

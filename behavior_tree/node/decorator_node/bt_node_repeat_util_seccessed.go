@@ -18,7 +18,7 @@ func NewBtNodeRepeatUtilSeccessed(name string, interval int64) *BtNodeRepeatUtil
 }
 
 func (this *BtNodeRepeatUtilSeccessed) Evaluate() bool {
-	return this.child.Evaluate()
+	return node.Evaluate(this.child)
 }
 
 func (this *BtNodeRepeatUtilSeccessed) Tick() def.BtnResult {

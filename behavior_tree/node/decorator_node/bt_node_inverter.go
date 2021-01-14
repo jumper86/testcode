@@ -18,7 +18,7 @@ func NewBtNodeInverter(name string, interval int64) *BtNodeInverter {
 }
 
 func (this *BtNodeInverter) Evaluate() bool {
-	return this.child.Evaluate()
+	return node.Evaluate(this.child)
 }
 
 func (this *BtNodeInverter) Tick() def.BtnResult {

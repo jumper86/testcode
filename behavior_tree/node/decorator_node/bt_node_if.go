@@ -23,7 +23,7 @@ func (this *BtNodeIf) Evaluate() bool {
 	if !this.cond() {
 		return false
 	}
-	return this.child.Evaluate()
+	return node.Evaluate(this.child)
 }
 
 func (this *BtNodeIf) Tick() def.BtnResult {

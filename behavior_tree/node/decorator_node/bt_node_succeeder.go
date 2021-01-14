@@ -18,7 +18,7 @@ func NewBtNodeSucceeder(name string, interval int64) *BtNodeSucceeder {
 }
 
 func (this *BtNodeSucceeder) Evaluate() bool {
-	return this.child.Evaluate()
+	return node.Evaluate(this.child)
 }
 
 func (this *BtNodeSucceeder) Tick() def.BtnResult {

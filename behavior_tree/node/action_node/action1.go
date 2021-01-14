@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testcode/behavior_tree/def"
 	"testcode/behavior_tree/node"
+	"time"
 )
 
 type BtNodeAction1 struct {
@@ -23,6 +24,6 @@ func (this *BtNodeAction1) Evaluate() bool {
 
 func (this *BtNodeAction1) Tick() def.BtnResult {
 
-	fmt.Printf("this is action 1 .\n")
+	fmt.Printf("time: %d, this is action 1 .\n", time.Now().UnixNano()/1000000)
 	return def.Successed
 }

@@ -1,17 +1,18 @@
 package node
 
 import (
+	"math/rand"
 	"testcode/behavior_tree/def"
 	"time"
 )
 
 type BtNode struct {
-	id                int64       //node id，在删除时需要使用
-	types             def.BtnType //节点类型
-	name              string      //名字
-	activated         bool        //是否激活
-	interval          int64       //运行cd, 单位纳秒
-	lastTimeEvaluated int64       //上次运行时间
+	id           int64       //node id，在删除时需要使用
+	types        def.BtnType //节点类型
+	name         string      //名字
+	activated    bool        //是否激活
+	interval     int64       //运行cd, 单位纳秒
+	lastTimeTick int64       //上次运行时间
 
 	evaluate func() bool   //个性验证
 	status   def.BtnStatus //节点运行状态
@@ -22,12 +23,12 @@ type BtNode struct {
 //interval 传0，则没有动作冷却时间
 func NewBtNode(name string, interval int64) BtNode {
 	var btn BtNode
-	btn.id = 1
+	btn.id = rand.Int63n(10000)
 	btn.types = def.BaseNode
 	btn.name = name
 	btn.activated = true
 	btn.interval = interval
-	btn.lastTimeEvaluated = 0
+	btn.lastTimeTick = 0
 	btn.status = def.Ready
 	return btn
 }
@@ -67,8 +68,17 @@ func (this *BtNode) GetActive() bool {
 	return this.activated
 }
 
+func (this *BtNode) UpdateLastTimeTick() {
+	t := time.Now().UnixNano() / 1000000
+	this.lastTimeTick = t
+}
+
 func (this *BtNode) CheckTimer() bool {
-	if time.Now().UnixNano()-this.lastTimeEvaluated > this.interval {
+	now := time.Now().UnixNano() / 1000000
+	//fmt.Printf("now: %d, last: %d, interval: %d\n", now, this.lastTimeTick, this.interval)
+	if now-this.lastTimeTick > this.interval {
+		//this.UpdateLastTimeTick()
+
 		return true
 	}
 	return false

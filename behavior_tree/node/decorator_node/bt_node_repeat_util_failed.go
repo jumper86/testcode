@@ -18,7 +18,7 @@ func NewBtNodeRepeatUtilFail(name string, interval int64) *BtNodeRepeatUtilFaile
 }
 
 func (this *BtNodeRepeatUtilFailed) Evaluate() bool {
-	return this.child.Evaluate()
+	return node.Evaluate(this.child)
 }
 
 func (this *BtNodeRepeatUtilFailed) Tick() def.BtnResult {

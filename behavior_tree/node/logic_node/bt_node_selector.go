@@ -28,7 +28,11 @@ func (this *BtNodeSelector) Evaluate() bool {
 	}
 
 	for i, child := range this.children {
-		if child.Evaluate() {
+		//fmt.Printf("child %v, time: %v\n", child.GetId(), time.Now().UnixNano())
+
+		//todo:node.Evaluate
+		if node.Evaluate(child) {
+			//fmt.Printf("child %v, time: %v\n", child.GetTypes(), time.Now().UnixNano())
 			this.activeIdx = i
 			this.activeChild = child
 			return true
@@ -46,8 +50,11 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 
 	childRst := node.Process(this.activeChild)
 
+	//fmt.Printf("this.activeChild: %v, childRst: %v\n", this.activeChild.GetTypes(), childRst)
+
 	//运行中
 	if childRst == def.Running {
+		//fmt.Printf("btni: %v, running\n", this.GetTypes())
 		return def.Running
 	}
 
@@ -62,7 +69,7 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 		found := false
 		for i := this.activeIdx; i < len(this.children); i++ {
 			tmp := this.children[i]
-			if tmp.Evaluate() {
+			if node.Evaluate(tmp) {
 				found = true
 				this.activeIdx = i
 				this.activeChild = tmp
@@ -81,6 +88,8 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 }
 
 func (this *BtNodeSelector) Reset() {
+	//fmt.Printf("reset ------ time: %v\n", time.Now().UnixNano())
+
 	this.SetStatus(def.Ready)
 	this.activeIdx = -1
 	this.activeChild = nil

@@ -37,7 +37,7 @@ func (this *BtNodeAnchorLoop) Evaluate() bool {
 	}
 
 	for _, child := range this.children {
-		if !child.Evaluate() {
+		if !node.Evaluate(child) {
 			return false
 		}
 	}
