@@ -73,10 +73,16 @@ func (this *BtNode) UpdateLastTimeTick() {
 	this.lastTimeTick = t
 }
 
+func (this *BtNode) GetLastTimeTick() int64 {
+	return this.lastTimeTick
+}
+
 func (this *BtNode) CheckTimer() bool {
 	now := time.Now().UnixNano() / 1000000
-	//fmt.Printf("now: %d, last: %d, interval: %d\n", now, this.lastTimeTick, this.interval)
 	if now-this.lastTimeTick > this.interval {
+		//fmt.Printf("time: %v --- btni.evaluate sucess: %v\n", time.Now().UnixNano()/1000000, this.GetTypes())
+		//fmt.Printf("now: %d, last: %d, interval: %d\n", now, this.lastTimeTick, this.interval)
+
 		//this.UpdateLastTimeTick()
 
 		return true

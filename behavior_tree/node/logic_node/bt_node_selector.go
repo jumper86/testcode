@@ -49,7 +49,6 @@ func (this *BtNodeSelector) Tick() def.BtnResult {
 	}
 
 	childRst := node.Process(this.activeChild)
-
 	//fmt.Printf("this.activeChild: %v, childRst: %v\n", this.activeChild.GetTypes(), childRst)
 
 	//运行中

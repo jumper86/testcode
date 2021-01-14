@@ -20,9 +20,11 @@ const (
 	DecoratorInverterNode            BtnType = 53
 	DecoratorRepeatUtilFailedNode    BtnType = 54
 	DecoratorRepeatUtilSeccessedNode BtnType = 55
+
 	//行为节点
-	Action1 BtnType = 100
-	Action2 BtnType = 101
+	ActionNodeStartPoint BtnType = 100
+	Action1              BtnType = 101
+	Action2              BtnType = 102
 )
 
 //节点运行结果

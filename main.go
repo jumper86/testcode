@@ -58,7 +58,7 @@ func main2() {
 func main() {
 
 	var s node.BtNodeInterf
-	s = logic_node.NewBtNodeSelector("s", 0)
+	s = logic_node.NewBtNodeSequence("s", 0)
 	var root node.BtNodeLogicInterf
 	root = s.(node.BtNodeLogicInterf)
 

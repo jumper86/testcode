@@ -9,6 +9,7 @@ type BtNodeInterf interface {
 	SetStatus(s def.BtnStatus)
 	GetStatus() def.BtnStatus
 	UpdateLastTimeTick()
+	GetLastTimeTick() int64
 
 	GetActive() bool
 	Enable()
