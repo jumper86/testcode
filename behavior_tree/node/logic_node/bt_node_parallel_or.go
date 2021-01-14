@@ -5,6 +5,22 @@ import (
 	"testcode/behavior_tree/node"
 )
 
+//note:
+//	检查方式：子节点中有一个满足，则检查通过
+//	执行方式：每次Tick依次执行所有子节点的Process，只要有一个成功或者失败就立即结束
+//	返回方式：
+//		所有子节点返回running，则返回running
+//		子节点返回failed，则返回failed
+//		子节点返回successed，则返回successed
+
+//note:
+//	这里有一个比较特殊的情况，比如先后加入两个节点a(1000ms) b(100ms)
+//	执行的时候，每100ms的时候， Evaluate 通过，然后执行第一个子节点a，成功返回
+//	这就造成了，a节点每100ms执行一次的结果
+//	这是因为在函数 Process 中对于行动节点取消判断 Evaluate 造成的。
+//	但是这是正常的，因为 ComposeParallelOrNode 逻辑就是检查有一个通过就行，执行的时候都可以尝试执行，没毛病。
+//	只是这个奇怪的结果稍加解释，这并非bug
+
 type BtNodeParallelOr struct {
 	BtLogicNode
 	result []def.BtnResult //每个子节点对应执行结果

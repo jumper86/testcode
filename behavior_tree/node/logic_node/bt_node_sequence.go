@@ -5,6 +5,14 @@ import (
 	"testcode/behavior_tree/node"
 )
 
+//note:
+//	检查方式：子节点中有一个不满足，则检查不予通过
+//	执行方式：依次执行每个子节点逻辑，每次Tick执行一次当前子节点的Process
+//	返回方式：
+//		子节点返回running，则返回running
+//		子节点返回failed，则返回failed
+//		非最后子节点返回successed，则返回running；最后子节点返回successed，则返回successed
+
 type BtNodeSequence struct {
 	BtLogicNode
 	activeIdx   int               //当前执行子节点idx

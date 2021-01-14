@@ -5,6 +5,14 @@ import (
 	"testcode/behavior_tree/node"
 )
 
+//note:
+//	检查方式：子节点中有一个不满足，则检查不通过
+//	执行方式：每次Tick依次执行所有未运行或运行中子节点的Process，只要有一个成功或者失败就立即结束
+//	返回方式：
+//		有一个子节点返回running，则返回running
+//		有一个子节点返回failed，则返回failed
+//		所有子节点返回successed，则返回successed
+
 type BtNodeParallelAnd struct {
 	BtLogicNode
 	result []def.BtnResult //每个子节点对应执行结果

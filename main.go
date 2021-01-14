@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testcode/behavior_tree"
 	"testcode/behavior_tree/node"
 	"testcode/behavior_tree/node/action_node"
@@ -9,56 +8,10 @@ import (
 	"time"
 )
 
-type TestI interface {
-	Process()
-	F1()
-}
-
-type BaseNode struct {
-}
-
-func (this *BaseNode) Process() {
-	this.F1()
-}
-
-func (this *BaseNode) F1() {
-	fmt.Printf("this is base node f1.\n")
-}
-
-type HNode struct {
-	BaseNode
-}
-
-func (this *HNode) F1() {
-	fmt.Printf("this is h node f1.\n")
-}
-
-//
-//func (this *HNode) Process() {
-//	fmt.Printf("this is h node.\n")
-//}
-
-func main2() {
-
-	//snode := logic_node.NewBtNodeSequence("s", 0)
-	//var baseNode node.BtNodeInterf
-	//baseNode = snode
-	//baseNode.Process()
-
-	h := HNode{}
-	h.BaseNode = BaseNode{}
-
-	var testi TestI
-	testi = &h
-
-	testi.Process()
-	testi.F1()
-}
-
 func main() {
 
 	var s node.BtNodeInterf
-	s = logic_node.NewBtNodeSequence("s", 0)
+	s = logic_node.NewBtNodeSelector("s", 0)
 	var root node.BtNodeLogicInterf
 	root = s.(node.BtNodeLogicInterf)
 
