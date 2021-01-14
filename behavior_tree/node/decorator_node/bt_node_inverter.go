@@ -5,6 +5,8 @@ import (
 	"testcode/behavior_tree/node"
 )
 
+//note:
+//	子节点结果取反再返回
 type BtNodeInverter struct {
 	BtDecoratorNode
 	child node.BtNodeInterf //所有子节点

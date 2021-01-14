@@ -5,6 +5,8 @@ import (
 	"testcode/behavior_tree/node"
 )
 
+//note:
+//	一直运行子节点直到其返回成功，再返回成功
 type BtNodeRepeatUtilSeccessed struct {
 	BtDecoratorNode
 	child node.BtNodeInterf //所有子节点

@@ -5,6 +5,8 @@ import (
 	"testcode/behavior_tree/node"
 )
 
+//note:
+//	子节点结果成功或者失败，都返回成功
 type BtNodeSucceeder struct {
 	BtDecoratorNode
 	child node.BtNodeInterf //所有子节点

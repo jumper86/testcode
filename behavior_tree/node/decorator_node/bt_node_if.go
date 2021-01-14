@@ -5,6 +5,8 @@ import (
 	"testcode/behavior_tree/node"
 )
 
+//note:
+//	运行子节点之前需要添加函数进行过滤
 type BtNodeIf struct {
 	BtDecoratorNode
 	cond  func() bool       //条件
@@ -33,20 +35,5 @@ func (this *BtNodeIf) Tick() def.BtnResult {
 	}
 
 	childRst := node.Process(this.child)
-	//结果 运行中
-	if childRst == def.Running {
-		return def.Running
-	}
-
-	//结果 成功
-	if childRst == def.Successed {
-		return def.Failed
-	}
-
-	//结果 失败
-	if childRst == def.Failed {
-		return def.Successed
-	}
-
-	return def.Failed
+	return childRst
 }
